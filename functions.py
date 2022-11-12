@@ -30,12 +30,24 @@ def getRandomNucs(seqSize) -> str:
         sequence += (nucleotides[random.randint(0, 3)])
     return sequence
 
+def getComplement(seq) -> str:
+    """Return the complementary DNA sequence to the inputted sequence"""
+
+    complementaryNucs = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
+    compSeq = ""
+    for x in seq:
+        compSeq += complementaryNucs[x]
+    return compSeq
+
 def transcribe(sequence) -> str:
     """Return a string of input DNA sequence in RNA format"""
+
     rna = sequence.replace('T','U')
     return rna
 
 class orfNode:
+    """Node class for ORFs. Stores start and end position of the orf"""
+
     def __init__(self, startPos=None, endPos=None) -> None:
         if startPos == None:
             self.startPos = 0
@@ -44,9 +56,8 @@ class orfNode:
 
 
 def getORF(sequence) -> list:
-    """Returns a list of open reading frames in the inputted sequence
-    Note: open reading frame (ORF) = charcters(nucelotides) between start and
-          stop codons"""
+    """returns a list of open reading frames from the inputted sequence.
+    ORF is defined by start and end positions only."""
 
     orfs = []
     currentORF = -1
@@ -85,7 +96,6 @@ def getORF(sequence) -> list:
         if x.endPos not in endPositions:
             newORFs.append(x)
             endPositions.append(x.endPos)
-
 
     # sort ORFs
     def selectionSort(array, size):
