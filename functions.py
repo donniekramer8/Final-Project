@@ -97,23 +97,24 @@ def getORF(sequence) -> list:
             newORFs.append(x)
             endPositions.append(x.endPos)
 
-    # sort ORFs
-    def selectionSort(array, size):
-        # source: https://www.geeksforgeeks.org/python-program-for-selection-sort/
-        for ind in range(size):
-            maxIndex = ind
-
-            for j in range(ind + 1, size):
-                # select the minimum element in every iteration
-                if (array[j].endPos - array[j].startPos) > (array[maxIndex].endPos - array[maxIndex].startPos):
-                    maxIndex = j
-             # swapping the elements to sort the array
-            (array[ind], array[maxIndex]) = (array[maxIndex], array[ind])
-        return array
-    
-    selectionSort(newORFs, len(newORFs))
-
     return newORFs
+
+def sortORFs(array, size) -> list:
+    """sorts a list of orfs from largest to smallest"""
+
+    # source: https://www.geeksforgeeks.org/python-program-for-selection-sort/
+    for ind in range(size):
+        maxIndex = ind
+
+        for j in range(ind + 1, size):
+            # select the minimum element in every iteration
+            if abs(array[j].endPos - array[j].startPos) > abs(array[maxIndex].endPos - array[maxIndex].startPos):
+                maxIndex = j
+        # swapping the elements to sort the array
+        (array[ind], array[maxIndex]) = (array[maxIndex], array[ind])
+
+    return array
+
 
 def longestORF(orfs) -> tuple:
     if orfs == []:
@@ -284,23 +285,32 @@ TGATGCCGATCCCCACCCCACCAAGCAGTGCGCTGCTAAGCAGCAGCGCACTTTGCGGGTAAAGCTCACG\
 CATCAATGCACCGACGGCAATCAGCAACAGACTGATGGCGACACTGCGACGTTCGCTGACATGCTGATGA\
 AGCCAGCTTCCGGCCAGCGCCAGCCCGCCCATGGTAACCACCGGCAGAGCGGTCGAC"
 
-    RNA = transcribe(testSeq)
-    ORFs = getORF(RNA)
+    compTestSeq = getComplement(testSeq[::-1])
     
-    for x in ORFs:
-        print(x.startPos, x.endPos)
+    forRNA = transcribe(testSeq)
+    revRNA = transcribe(compTestSeq)
+
+    forORFs = getORF(forRNA)
+    revORFs = getORF(revRNA)
+
+    for i in revORFs:
+        i.startPos, i.endPos = len(compTestSeq)-i.startPos, len(compTestSeq)-i.endPos
     
-    longestPositions = longestORF(ORFs)
-    longestSeq = RNA[longestPositions[0]:longestPositions[1]]
+    allORFs = forORFs + revORFs
+    allORFs = sortORFs(allORFs, len(allORFs))
+   
+    for i in allORFs:
+        if i.endPos > i.startPos:
+            print(i.startPos, i.endPos, i.endPos-i.startPos, "+")
+        else:
+            print(i.startPos, i.endPos, i.startPos-i.endPos, "-")
+    
+    # for i in forORFs:
+    #     print(i.startPos, i.endPos)
 
-    protein = translate(longestSeq)
-
-    # print(longestSeq)
-    print(longestPositions)
-    print(f"Length of mRNA: {len(longestSeq)}")
-    print(protein)
-    print(f"Length of Protein: {len(protein)}")
-
+    # for i in revORFs:
+    #     print(i.startPos, i.endPos, i.startPos-i.endPos)
+    #     print(getComplement(testSeq[i.endPos:i.startPos]))
 
 
 
