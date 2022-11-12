@@ -45,6 +45,33 @@ def transcribe(sequence) -> str:
     rna = sequence.replace('T','U')
     return rna
 
+def translate(rna) -> str:
+    codons = {
+    "UUU" : "F", "CUU" : "L", "AUU" : "I", "GUU" : "V", "UUC" : "F", 
+    "CUC" : "L", "AUC" : "I", "GUC" : "V", "UUA" : "L", "CUA" : "L",
+    "AUA" : "I", "GUA" : "V", "UUG" : "L", "CUG" : "L", "AUG" : "M",
+    "GUG" : "V", "UCU" : "S", "CCU" : "P", "ACU" : "T", "GCU" : "A",
+    "UCC" : "S", "CCC" : "P", "ACC" : "T", "GCC" : "A", "UCA" : "S",
+    "CCA" : "P", "ACA" : "T", "GCA" : "A", "UCG" : "S", "CCG" : "P",
+    "ACG" : "T", "GCG" : "A", "UAU" : "Y", "CAU" : "H", "AAU" : "N",
+    "GAU" : "D", "UAC" : "Y", "CAC" : "H", "AAC" : "N", "GAC" : "D",
+    "UAA" : "-", "CAA" : "Q", "AAA" : "K", "GAA" : "E", "UAG" : "-",
+    "CAG" : "Q", "AAG" : "K", "GAG" : "E", "UGU" : "C", "CGU" : "R",
+    "AGU" : "S", "GGU" : "G", "UGC" : "C", "CGC" : "R", "AGC" : "S",
+    "GGC" : "G", "UGA" : "-", "CGA" : "R", "AGA" : "R", "GGA" : "G",
+    "UGG" : "W", "CGG" : "R", "AGG" : "R", "GGG" : "G"
+    }
+
+    protein = ""
+
+    i = 0
+    while i <= len(rna)-3:
+        if rna[i+2]:
+            protein += codons[rna[i] + rna[i+1] + rna[i+2]]
+        i += 3
+    
+    return protein
+
 class orfNode:
     """Node class for ORFs. Stores start and end position of the orf"""
 
@@ -127,55 +154,8 @@ def longestORF(orfs) -> tuple:
                 x = orfs[i+1]
         return (x.startPos, x.endPos)
 
-def translate(rna) -> str:
-    codons = {
-    "UUU" : "F", "CUU" : "L", "AUU" : "I", "GUU" : "V", "UUC" : "F", 
-    "CUC" : "L", "AUC" : "I", "GUC" : "V", "UUA" : "L", "CUA" : "L",
-    "AUA" : "I", "GUA" : "V", "UUG" : "L", "CUG" : "L", "AUG" : "M",
-    "GUG" : "V", "UCU" : "S", "CCU" : "P", "ACU" : "T", "GCU" : "A",
-    "UCC" : "S", "CCC" : "P", "ACC" : "T", "GCC" : "A", "UCA" : "S",
-    "CCA" : "P", "ACA" : "T", "GCA" : "A", "UCG" : "S", "CCG" : "P",
-    "ACG" : "T", "GCG" : "A", "UAU" : "Y", "CAU" : "H", "AAU" : "N",
-    "GAU" : "D", "UAC" : "Y", "CAC" : "H", "AAC" : "N", "GAC" : "D",
-    "UAA" : "-", "CAA" : "Q", "AAA" : "K", "GAA" : "E", "UAG" : "-",
-    "CAG" : "Q", "AAG" : "K", "GAG" : "E", "UGU" : "C", "CGU" : "R",
-    "AGU" : "S", "GGU" : "G", "UGC" : "C", "CGC" : "R", "AGC" : "S",
-    "GGC" : "G", "UGA" : "-", "CGA" : "R", "AGA" : "R", "GGA" : "G",
-    "UGG" : "W", "CGG" : "R", "AGG" : "R", "GGG" : "G"
-    }
-
-    protein = ""
-
-    i = 0
-    while i <= len(rna)-3:
-        if rna[i+2]:
-            protein += codons[rna[i] + rna[i+1] + rna[i+2]]
-        i += 3
-    
-    return protein
-
-
-
 
 if __name__ == "__main__":
-    #randomSeq = getRandomNucs(1000)
-    #RNA = transcribe(randomSeq)
-    #ORFs = getORF(RNA)
-#
-    #for x in ORFs:
-    #    print(x.startPos, x.endPos)
-    #    # print(x.startPos, x.endPos, randomSeq[x.startPos:x.endPos])
-#
-    #longestPositions = longestORF(ORFs)
-    #longestSeq = RNA[longestPositions[0]:longestPositions[1]]
-#
-    #protein = translate(longestSeq)
-#
-    #print(longestSeq)
-    #print(longestPositions)
-    #print(f"Length of mRNA: {len(longestSeq)}")
-    #print(protein)
-    #print(f"Length of Protein: {len(protein)}")
 
     testSeq = "GACACCATCGAATGGCGCAAAACCTTTCGCGGTATGGCATGATAGCGCCCGGAAGAGAGTCAATTCAGGG\
 TGGTGAATGTGAAACCAGTAACGTTATACGATGTCGCAGAGTATGCCGGTGTCTCTTATCAGACCGTTTC\
@@ -301,83 +281,7 @@ AGCCAGCTTCCGGCCAGCGCCAGCCCGCCCATGGTAACCACCGGCAGAGCGGTCGAC"
    
     for i in allORFs:
         if i.endPos > i.startPos:
-            print(i.startPos, i.endPos, i.endPos-i.startPos, "+")
+            print(i.startPos+1, i.endPos, i.endPos-i.startPos, "+")
         else:
-            print(i.startPos, i.endPos, i.startPos-i.endPos, "-")
-    
-    # for i in forORFs:
-    #     print(i.startPos, i.endPos)
+            print(i.startPos+1, i.endPos, i.startPos-i.endPos, "-")
 
-    # for i in revORFs:
-    #     print(i.startPos, i.endPos, i.startPos-i.endPos)
-    #     print(getComplement(testSeq[i.endPos:i.startPos]))
-
-
-
-
-
-
-
-
-
-
-
-
-    #randomSeq = getRandomNucs(1000)
-    #RNA = transcribe(randomSeq)
-    #ORFs = getORF(RNA)
-#
-    #newORFs = []
-#
-    #endPositions = []
-    #for x in ORFs:
-    #    if x.endPos not in endPositions:
-    #        newORFs.append(x)
-    #        endPositions.append(x.endPos)
-#
-    #longestPositions = longestORF(newORFs)
-    #longestSeq = RNA[longestPositions[0]:longestPositions[1]]
-#
-    #protein = translate(longestSeq)
- #
-    ## print(longestSeq)
-    #print(longestPositions)
-    #print(f"Length of mRNA: {len(longestSeq)}")
-    #print(protein)
-    #print(f"Length of Protein: {len(protein)}")
-
-    
-
-
-
-
-
-
-
-
-
-    # print(testSeq)
-
-    
-    #print(randomSeq)
-    #print(RNA)
-
-    #protein = translate(RNA)
-    #print(protein)
-
-    #for x in ORFs:
-    #    if x.endPos - x.startPos == 1:
-    #        Acount += 1
-    #    else:
-    #        otherCount += 1
-    #print(Acount)
-    #print(otherCount)
-
-    # ATG
-    
-    # next nuc == A -> stop
-    # next nuc == T -> go (but can form stop codon)
-    # next nuc == C -> go
-    # next nuc == G -> go
-
-    # TGA TAA TAG
