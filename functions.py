@@ -95,6 +95,7 @@ def getORF(sequence) -> list:
 
     # skip last 3 characters in string
     i = 0
+    current = 0
     while i <len(sequence)-3:
         if not gene and (sequence[i], sequence[i+1], sequence[i+2]) == startCodon:
             gene = True
@@ -146,7 +147,7 @@ def sortORFs(array, size) -> list:
 def longestORF(orfs) -> tuple:
     if orfs == []:
         # raise error
-        return None
+        return orfs
     else:
         x = orfs[0]
         for i in range(len(orfs)-1):
