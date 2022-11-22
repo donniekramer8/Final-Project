@@ -21,6 +21,13 @@
 import random
 
 
+def isDNA(seq) -> bool:
+    nucleotides = ['A', 'T', 'C', 'G', "\n"]
+    for i in seq:
+        if i not in nucleotides:
+            return False
+    return True
+
 def getRandomNucs(seqSize) -> str:
     """Returns a string of random DNA nucleotides of size seqSize"""
 
