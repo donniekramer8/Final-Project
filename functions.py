@@ -186,12 +186,19 @@ def master(testSeq) -> str:
     allORFs = sortORFs(allORFs, len(allORFs))
 
     result = ""
-   
+
     for i in allORFs:
         if i.endPos > i.startPos:
-            result += f"{i.startPos+1} {i.endPos} {i.endPos-i.startPos} +\n"
+            result += f"{i.startPos+1} {i.endPos}\n\n"
+            result += f"{translate(forRNA[i.startPos:i.endPos])}"
+            # result += f"{i.startPos+1} {i.endPos} {i.endPos-i.startPos} +\n"
         else:
-            result += f"{i.startPos+1} {i.endPos} {i.startPos-i.endPos} -\n"
+            start = len(revRNA)-1-i.startPos
+            end = len(revRNA)-1-i.endPos
+            result += f"{i.startPos+1} {i.endPos}\n\n"
+            result += f"{translate(revRNA[start:end])}"
+            # result += f"{i.startPos+1} {i.endPos} {i.startPos-i.endPos} -\n"
+        break
     
     return result
 
