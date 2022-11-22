@@ -10,7 +10,7 @@ def takeInput():
     INPUT = inputText.get("1.0", "end-1c")
     if isDNA(INPUT):
         output.delete("1.0", "end")
-        output.insert(END, transcribe(INPUT))
+        output.insert(END, master(getRaw(INPUT)))
         inputText.delete("1.0", "end")
     else:
         output.delete("1.0", "end")

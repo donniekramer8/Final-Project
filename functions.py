@@ -28,6 +28,14 @@ def isDNA(seq) -> bool:
             return False
     return True
 
+def getRaw(seq) -> str:
+    nucleotides = ['A', 'T', 'C', 'G']
+    raw = ""
+    for i in seq:
+        if i in nucleotides:
+            raw += i
+    return raw
+
 def getRandomNucs(seqSize) -> str:
     """Returns a string of random DNA nucleotides of size seqSize"""
 
@@ -161,6 +169,31 @@ def longestORF(orfs) -> tuple:
             if orfs[i+1].endPos - orfs[i+1].startPos > x.endPos - x.startPos:
                 x = orfs[i+1]
         return (x.startPos, x.endPos)
+
+def master(testSeq) -> str:
+    compTestSeq = getComplement(testSeq[::-1])
+    
+    forRNA = transcribe(testSeq)
+    revRNA = transcribe(compTestSeq)
+
+    forORFs = getORF(forRNA)
+    revORFs = getORF(revRNA)
+
+    for i in revORFs:
+        i.startPos, i.endPos = len(compTestSeq)-i.startPos, len(compTestSeq)-i.endPos
+    
+    allORFs = forORFs + revORFs
+    allORFs = sortORFs(allORFs, len(allORFs))
+
+    result = ""
+   
+    for i in allORFs:
+        if i.endPos > i.startPos:
+            result += f"{i.startPos+1} {i.endPos} {i.endPos-i.startPos} +\n"
+        else:
+            result += f"{i.startPos+1} {i.endPos} {i.startPos-i.endPos} -\n"
+    
+    return result
 
 
 if __name__ == "__main__":
