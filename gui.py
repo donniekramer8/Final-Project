@@ -1,3 +1,23 @@
+"""
+* Name : gui.py
+* Author: Donnie Kramer
+* Created : 11/21/22
+* Course: CIS 152 - Data Structure
+* Version: 1.0
+* OS: Mac OS
+* IDE: PyCharm 2021.3.1
+* Copyright : This is my own original work 
+* based on specifications issued by our instructor
+* Description : The purpose of this program is to ***
+*            Input: ***
+*            Ouput: ***
+* Academic Honesty: I attest that this is my original work.
+* I have not used unauthorized source code, either modified or
+* unmodified. I have not given other fellow student(s) access
+* to my program.
+"""
+
+
 from tkinter import *
 from functions import *
 
@@ -20,11 +40,11 @@ def takeInput():
 
 l = Label(text="Enter Sequence in Raw Format:")
 inputText = Text(root, height=20,
-                width=100,
-                cursor="trek",
-                insertbackground="black",
-                fg="black",
-                bg="white")
+                 width=100,
+                 cursor="trek",
+                 insertbackground="black",
+                 fg="black",
+                 bg="white")
 
 output = Text(root, height=20,
               width=100,

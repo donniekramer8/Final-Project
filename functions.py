@@ -1,7 +1,7 @@
 """
-* Name : ***.py
+* Name : functions.py
 * Author: Donnie Kramer
-* Created : ***
+* Created : 11/12/22
 * Course: CIS 152 - Data Structure
 * Version: 1.0
 * OS: Mac OS
@@ -28,6 +28,7 @@ def isDNA(seq) -> bool:
             return False
     return True
 
+
 def getRaw(seq) -> str:
     nucleotides = ['A', 'T', 'C', 'G']
     raw = ""
@@ -35,6 +36,7 @@ def getRaw(seq) -> str:
         if i in nucleotides:
             raw += i
     return raw
+
 
 def getRandomNucs(seqSize) -> str:
     """Returns a string of random DNA nucleotides of size seqSize"""
@@ -45,6 +47,7 @@ def getRandomNucs(seqSize) -> str:
         sequence += (nucleotides[random.randint(0, 3)])
     return sequence
 
+
 def getComplement(seq) -> str:
     """Return the complementary DNA sequence to the inputted sequence"""
 
@@ -54,27 +57,29 @@ def getComplement(seq) -> str:
         compSeq += complementaryNucs[x]
     return compSeq
 
+
 def transcribe(sequence) -> str:
     """Return a string of input DNA sequence in RNA format"""
 
-    rna = sequence.replace('T','U')
+    rna = sequence.replace('T', 'U')
     return rna
+
 
 def translate(rna) -> str:
     codons = {
-    "UUU" : "F", "CUU" : "L", "AUU" : "I", "GUU" : "V", "UUC" : "F", 
-    "CUC" : "L", "AUC" : "I", "GUC" : "V", "UUA" : "L", "CUA" : "L",
-    "AUA" : "I", "GUA" : "V", "UUG" : "L", "CUG" : "L", "AUG" : "M",
-    "GUG" : "V", "UCU" : "S", "CCU" : "P", "ACU" : "T", "GCU" : "A",
-    "UCC" : "S", "CCC" : "P", "ACC" : "T", "GCC" : "A", "UCA" : "S",
-    "CCA" : "P", "ACA" : "T", "GCA" : "A", "UCG" : "S", "CCG" : "P",
-    "ACG" : "T", "GCG" : "A", "UAU" : "Y", "CAU" : "H", "AAU" : "N",
-    "GAU" : "D", "UAC" : "Y", "CAC" : "H", "AAC" : "N", "GAC" : "D",
-    "UAA" : "-", "CAA" : "Q", "AAA" : "K", "GAA" : "E", "UAG" : "-",
-    "CAG" : "Q", "AAG" : "K", "GAG" : "E", "UGU" : "C", "CGU" : "R",
-    "AGU" : "S", "GGU" : "G", "UGC" : "C", "CGC" : "R", "AGC" : "S",
-    "GGC" : "G", "UGA" : "-", "CGA" : "R", "AGA" : "R", "GGA" : "G",
-    "UGG" : "W", "CGG" : "R", "AGG" : "R", "GGG" : "G"
+        "UUU": "F", "CUU": "L", "AUU": "I", "GUU": "V", "UUC": "F",
+        "CUC": "L", "AUC": "I", "GUC": "V", "UUA": "L", "CUA": "L",
+        "AUA": "I", "GUA": "V", "UUG": "L", "CUG": "L", "AUG": "M",
+        "GUG": "V", "UCU": "S", "CCU": "P", "ACU": "T", "GCU": "A",
+        "UCC": "S", "CCC": "P", "ACC": "T", "GCC": "A", "UCA": "S",
+        "CCA": "P", "ACA": "T", "GCA": "A", "UCG": "S", "CCG": "P",
+        "ACG": "T", "GCG": "A", "UAU": "Y", "CAU": "H", "AAU": "N",
+        "GAU": "D", "UAC": "Y", "CAC": "H", "AAC": "N", "GAC": "D",
+        "UAA": "-", "CAA": "Q", "AAA": "K", "GAA": "E", "UAG": "-",
+        "CAG": "Q", "AAG": "K", "GAG": "E", "UGU": "C", "CGU": "R",
+        "AGU": "S", "GGU": "G", "UGC": "C", "CGC": "R", "AGC": "S",
+        "GGC": "G", "UGA": "-", "CGA": "R", "AGA": "R", "GGA": "G",
+        "UGG": "W", "CGG": "R", "AGG": "R", "GGG": "G"
     }
 
     protein = ""
@@ -84,8 +89,9 @@ def translate(rna) -> str:
         if rna[i+2]:
             protein += codons[rna[i] + rna[i+1] + rna[i+2]]
         i += 3
-    
+
     return protein
+
 
 class orfNode:
     """Node class for ORFs. Stores start and end position of the orf"""
@@ -111,7 +117,7 @@ def getORF(sequence) -> list:
     # skip last 3 characters in string
     i = 0
     current = 0
-    while i <len(sequence)-3:
+    while i < len(sequence)-3:
         if not gene and (sequence[i], sequence[i+1], sequence[i+2]) == startCodon:
             gene = True
             current = i
@@ -142,6 +148,7 @@ def getORF(sequence) -> list:
 
     return newORFs
 
+
 def sortORFs(array, size) -> list:
     """sorts a list of orfs from largest to smallest"""
 
@@ -170,9 +177,10 @@ def longestORF(orfs) -> tuple:
                 x = orfs[i+1]
         return (x.startPos, x.endPos)
 
+
 def master(testSeq) -> str:
     compTestSeq = getComplement(testSeq[::-1])
-    
+
     forRNA = transcribe(testSeq)
     revRNA = transcribe(compTestSeq)
 
@@ -180,8 +188,9 @@ def master(testSeq) -> str:
     revORFs = getORF(revRNA)
 
     for i in revORFs:
-        i.startPos, i.endPos = len(compTestSeq)-i.startPos, len(compTestSeq)-i.endPos
-    
+        i.startPos, i.endPos = len(compTestSeq) - \
+            i.startPos, len(compTestSeq)-i.endPos
+
     allORFs = forORFs + revORFs
     allORFs = sortORFs(allORFs, len(allORFs))
 
@@ -199,7 +208,7 @@ def master(testSeq) -> str:
             result += f"{translate(revRNA[start:end])}"
             # result += f"{i.startPos+1} {i.endPos} {i.startPos-i.endPos} -\n"
         break
-    
+
     return result
 
 
@@ -314,7 +323,7 @@ CATCAATGCACCGACGGCAATCAGCAACAGACTGATGGCGACACTGCGACGTTCGCTGACATGCTGATGA\
 AGCCAGCTTCCGGCCAGCGCCAGCCCGCCCATGGTAACCACCGGCAGAGCGGTCGAC"
 
     compTestSeq = getComplement(testSeq[::-1])
-    
+
     forRNA = transcribe(testSeq)
     revRNA = transcribe(compTestSeq)
 
@@ -322,14 +331,14 @@ AGCCAGCTTCCGGCCAGCGCCAGCCCGCCCATGGTAACCACCGGCAGAGCGGTCGAC"
     revORFs = getORF(revRNA)
 
     for i in revORFs:
-        i.startPos, i.endPos = len(compTestSeq)-i.startPos, len(compTestSeq)-i.endPos
-    
+        i.startPos, i.endPos = len(compTestSeq) - \
+            i.startPos, len(compTestSeq)-i.endPos
+
     allORFs = forORFs + revORFs
     allORFs = sortORFs(allORFs, len(allORFs))
-   
+
     for i in allORFs:
         if i.endPos > i.startPos:
             print(i.startPos+1, i.endPos, i.endPos-i.startPos, "+")
         else:
             print(i.startPos+1, i.endPos, i.startPos-i.endPos, "-")
-
