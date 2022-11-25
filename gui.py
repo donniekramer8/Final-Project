@@ -46,14 +46,14 @@ inputText = Text(root, height=20,
                  fg="black",
                  bg="white")
 
-output = Text(root, height=20,
+output = Text(root, height=30,
               width=100,
               fg="black",
               bg="white")
 
 Display = Button(root, height=2,
                  width=20,
-                 text="Show",
+                 text="Get Open Reading Frames",
                  command=lambda: takeInput())
 
 l.pack()
