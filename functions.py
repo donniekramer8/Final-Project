@@ -6,7 +6,7 @@
 * Version: 1.0
 * OS: Mac OS
 * IDE: PyCharm 2021.3.1
-* Copyright : This is my own original work 
+* Copyright : This is my own original work
 * based on specifications issued by our instructor
 * Description : The purpose of this program is to ***
 *            Input: ***
@@ -22,50 +22,42 @@ import random
 
 
 def isDNA(seq) -> bool:
+    """Returns true if inputted sequence is DNA"""
+
     nucleotides = ['A', 'T', 'C', 'G', "\n"]
-    for i in seq:
-        if i not in nucleotides:
-            return False
-    return True
+    return all(i in nucleotides for i in seq)
 
 
 def getRaw(seq) -> str:
+    """Returns a string of only the raw nucleotides"""
+
     nucleotides = ['A', 'T', 'C', 'G']
-    raw = ""
-    for i in seq:
-        if i in nucleotides:
-            raw += i
-    return raw
+    return "".join(i for i in seq if i in nucleotides)
 
 
 def getRandomNucs(seqSize) -> str:
     """Returns a string of random DNA nucleotides of size seqSize"""
 
     nucleotides = ['A', 'T', 'C', 'G']
-    sequence = ""
-    for _ in range(seqSize):
-        sequence += (nucleotides[random.randint(0, 3)])
-    return sequence
+    return "".join(nucleotides[random.randint(0, 3)] for _ in range(seqSize))
 
 
 def getComplement(seq) -> str:
     """Return the complementary DNA sequence to the inputted sequence"""
 
     complementaryNucs = {'A': 'T', 'U': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
-    compSeq = ""
-    for x in seq:
-        compSeq += complementaryNucs[x]
-    return compSeq
+    return "".join(complementaryNucs[x] for x in seq)
 
 
 def transcribe(sequence) -> str:
     """Return a string of input DNA sequence in RNA format"""
 
-    rna = sequence.replace('T', 'U')
-    return rna
+    return sequence.replace('T', 'U')
 
 
 def translate(rna) -> str:
+    """Translates RNA -> Protein sequence"""
+
     codons = {
         "UUU": "F", "CUU": "L", "AUU": "I", "GUU": "V", "UUC": "F",
         "CUC": "L", "AUC": "I", "GUC": "V", "UUA": "L", "CUA": "L",
@@ -97,9 +89,9 @@ class orfNode:
     """Node class for ORFs. Stores start and end position of the orf"""
 
     def __init__(self, startPos=None, endPos=None) -> None:
-        if startPos == None:
+        if startPos is None:
             self.startPos = 0
-        if endPos == None:
+        if endPos is None:
             self.endPos = 0
 
 
@@ -118,23 +110,23 @@ def getORF(sequence) -> list:
     i = 0
     current = 0
     while i < len(sequence)-3:
-        if not gene and (sequence[i], sequence[i+1], sequence[i+2]) == startCodon:
+        if not gene and \
+                (sequence[i], sequence[i+1], sequence[i+2]) == startCodon:
             gene = True
             current = i
             orfs.append(orfNode())
             currentORF += 1
             orfs[currentORF].startPos = i
-        elif gene and (sequence[i], sequence[i+1], sequence[i+2]) in stopCodons:
+        elif gene and \
+                (sequence[i], sequence[i+1], sequence[i+2]) in stopCodons:
             gene = False
             i += 3
             orfs[currentORF].endPos = i
             i = current
-        if gene:
-            i += 3
-        else:
-            i += 1
+        i += 3 if gene else 1
 
-    # come back to last 3 characters in string, append to end of last ORF if gene
+    # come back to last 3 characters in string, append to end of the last
+    # ORF if gene
     if gene and (sequence[-1], sequence[-2], sequence[-3]) not in stopCodons:
         orfs[-1].endPos = len(sequence)
 
@@ -158,7 +150,8 @@ def sortORFs(array, size) -> list:
 
         for j in range(ind + 1, size):
             # select the minimum element in every iteration
-            if abs(array[j].endPos - array[j].startPos) > abs(array[maxIndex].endPos - array[maxIndex].startPos):
+            if abs(array[j].endPos - array[j].startPos) > \
+                    abs(array[maxIndex].endPos - array[maxIndex].startPos):
                 maxIndex = j
         # swapping the elements to sort the array
         (array[ind], array[maxIndex]) = (array[maxIndex], array[ind])
@@ -167,19 +160,20 @@ def sortORFs(array, size) -> list:
 
 
 def longestORF(orfs) -> tuple:
+    """Returns start and end positions on the forward RNA strand of
+    the longest open reading frame"""
+
     if orfs == []:
         # raise error
         return orfs
-    else:
-        x = orfs[0]
-        for i in range(len(orfs)-1):
-            if orfs[i+1].endPos - orfs[i+1].startPos > x.endPos - x.startPos:
-                x = orfs[i+1]
-        return (x.startPos, x.endPos)
+    x = orfs[0]
+    for i in range(len(orfs)-1):
+        if orfs[i+1].endPos - orfs[i+1].startPos > x.endPos - x.startPos:
+            x = orfs[i+1]
+    return (x.startPos, x.endPos)
 
 
 def master(testSeq) -> str:
-
 
     forRNA = transcribe(testSeq)
 
@@ -202,34 +196,37 @@ def master(testSeq) -> str:
 
     for i in allORFs:
         if i.endPos > i.startPos:
-            result += f"Start: {i.startPos+1}\nEnd: {i.endPos}\nLength: {i.endPos-i.startPos}\n+\n"
+            result += f"Start: {i.startPos+1}\nEnd: {i.endPos}\n\
+                    Length: {i.endPos-i.startPos}\n+\n"
             result += f"{translate(forRNA[i.startPos:i.endPos])}\n\n"
         else:
-            result += f"Start: {i.startPos+1}\nEnd: {i.endPos}\nLength: {i.startPos-i.endPos}\n-\n"
+            result += f"Start: {i.startPos+1}\nEnd: {i.endPos}\n\
+                    Length: {i.startPos-i.endPos}\n-\n"
             result += f"{translate(revRNA[i.endPos:i.startPos][::-1])}\n\n"
 
-    
     return result
 
 
 if __name__ == "__main__":
 
-#     testSeq = "GTAAAAGACCACCTTCTTAGAAGGTGGCTTTTGAGAATGCCCCCTGTAAGGGGGGCTACTTTCACCTTCC\
-# GCTTACTACTCTAGCAATTCCATCTGTTGTTCATGTGTTTGTTCCGTTTTCTCCTGATGCCGCACATATC\
-# TTCTGATAATTTCCTCGTTCACTCCTACCGTATCTACAAAGTAACCACGCGACCAAAAATGGTTTCCCCA\
-# GAGCTTCTTCCTGATGTGTGGAAAACGATTGTAGAGCCTGATGGCACTGCGACCTTTCAAATGGCCCATT\
-# AGCGTTGATATTGAGATTTTAGGTGGGACGATGACGACTAGACGAT"
+    #     testSeq = "\
+    # GTAAAAGACCACCTTCTTAGAAGGTGGCTTTTGAGAATGCCCCCTGTAAGGGGGGCTACTTTCACCTTCC\
+    # GCTTACTACTCTAGCAATTCCATCTGTTGTTCATGTGTTTGTTCCGTTTTCTCCTGATGCCGCACATATC\
+    # TTCTGATAATTTCCTCGTTCACTCCTACCGTATCTACAAAGTAACCACGCGACCAAAAATGGTTTCCCCA\
+    # GAGCTTCTTCCTGATGTGTGGAAAACGATTGTAGAGCCTGATGGCACTGCGACCTTTCAAATGGCCCATT\
+    # AGCGTTGATATTGAGATTTTAGGTGGGACGATGACGACTAGACGAT"
 
-#     testSeq = transcribe(testSeq)
+    #     testSeq = transcribe(testSeq)
 
-#     testSeq = "AUCGUCUAGUCGUCAUCGUCCCACCUAAAAUCUCAAUAUCAACGCUAAUGGGCCAUUUGAAAGGUCGCAGUG\
-# CCAUCAGGCUCUACAAUCGUUUUCCACACAUCAGGAAGAAGCUCUGGGGAAACCAUUUUUGGUCGCGUGGU\
-# UACUUUGUAGAUACGGUAGGAGUGAACGAGGAAAUUAUCAGAAGAUAUGUGCGGCAUCAGGAGAAAACGGA\
-# ACAAACACAUGAACAACAGAUGGAAUUGCUAGAGUAGUAAGCGGAAGGUGAAAGUAGCCCCCCUUACAGGG\
-# GGCAUUCUCAAAAGCCACCUUCUAAGAAGGUGGUCUUUUAC"
+    #     testSeq = "
+    # AUCGUCUAGUCGUCAUCGUCCCACCUAAAAUCUCAAUAUCAACGCUAAUGGGCCAUUUGAAAGGUCGCAGUG\
+    # CCAUCAGGCUCUACAAUCGUUUUCCACACAUCAGGAAGAAGCUCUGGGGAAACCAUUUUUGGUCGCGUGGU\
+    # UACUUUGUAGAUACGGUAGGAGUGAACGAGGAAAUUAUCAGAAGAUAUGUGCGGCAUCAGGAGAAAACGGA\
+    # ACAAACACAUGAACAACAGAUGGAAUUGCUAGAGUAGUAAGCGGAAGGUGAAAGUAGCCCCCCUUACAGGG\
+    # GGCAUUCUCAAAAGCCACCUUCUAAGAAGGUGGUCUUUUAC"
 
-
-    testSeq = "GACACCATCGAATGGCGCAAAACCTTTCGCGGTATGGCATGATAGCGCCCGGAAGAGAGTCAATTCAGGG\
+    testSeq = "\
+GACACCATCGAATGGCGCAAAACCTTTCGCGGTATGGCATGATAGCGCCCGGAAGAGAGTCAATTCAGGG\
 TGGTGAATGTGAAACCAGTAACGTTATACGATGTCGCAGAGTATGCCGGTGTCTCTTATCAGACCGTTTC\
 CCGCGTGGTGAACCAGGCCAGCCACGTTTCTGCGAAAACGCGGGAAAAAGTGGAAGCGGCGATGGCGGAG\
 CTGAATTACATTCCCAACCGCGTGGCACAACAACTGGCGGGCAAACAGTCGTTGCTGATTGGCGTTGCCA\
@@ -364,4 +361,3 @@ AGCCAGCTTCCGGCCAGCGCCAGCCCGCCCATGGTAACCACCGGCAGAGCGGTCGAC"
     #         print(translate(revRNA[i.endPos:i.startPos]))
 
     print(master(testSeq))
-
