@@ -174,6 +174,7 @@ def longestORF(orfs) -> tuple:
 
 
 def master(testSeq) -> str:
+    """Master function, input a sequnce and get a list of ORfs in return"""
 
     forRNA = transcribe(testSeq)
 
