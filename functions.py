@@ -159,18 +159,34 @@ def sortORFs(array, size) -> list:
     return array
 
 
-def longestORF(orfs) -> tuple:
+def longestORF(seq) -> tuple:
     """Returns start and end positions on the forward RNA strand of
     the longest open reading frame"""
 
+    RNAseq = transcribe(seq)
+    orfs = getORF(RNAseq)
+
     if orfs == []:
         # raise error
-        return orfs
+        return "hello"
+        # return orfs
     x = orfs[0]
     for i in range(len(orfs)-1):
         if orfs[i+1].endPos - orfs[i+1].startPos > x.endPos - x.startPos:
             x = orfs[i+1]
-    return (x.startPos, x.endPos)
+    return getProtein(RNAseq, x.startPos, x.endPos)
+
+
+def getProtein(RNAseq, start, end) -> str:
+    # sourcery skip: assign-if-exp, merge-assign-and-aug-assign
+    """Returns sequence string after its location start and end positinos are
+    inputted"""
+
+    result = ""
+    if end > start:
+        result += str(translate(RNAseq[start:end]))
+    else:
+        result += str(translate(RNAseq[end:start][::-1]))
 
 
 def master(testSeq) -> str:
