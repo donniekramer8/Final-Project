@@ -159,12 +159,11 @@ def sortORFs(array, size) -> list:
     return array
 
 
-def longestORF(seq) -> tuple:
-    """Returns start and end positions on the forward RNA strand of
-    the longest open reading frame"""
+def longestORF(testSeq) -> tuple:
+    """Returns protein sequence string of longest ORF in of the inputted DNA
+    strand"""
 
-    RNAseq = transcribe(seq)
-    orfs = getORF(RNAseq)
+    orfs = getAllOrfs(testSeq)
 
     if orfs == []:
         # raise error
@@ -174,10 +173,17 @@ def longestORF(seq) -> tuple:
     for i in range(len(orfs)-1):
         if orfs[i+1].endPos - orfs[i+1].startPos > x.endPos - x.startPos:
             x = orfs[i+1]
-    return getProtein(RNAseq, x.startPos, x.endPos)
+
+    if x.endPos > x.startPos:
+        RNA = transcribe(testSeq)
+    else:
+        compTestSeq = getComplement(testSeq[::-1])
+        revRNA = transcribe(compTestSeq)
+        RNA = revRNA
+    return _getProtein(RNA, x.startPos, x.endPos)
 
 
-def getProtein(RNAseq, start, end) -> str:
+def _getProtein(RNAseq, start, end) -> str:
     # sourcery skip: assign-if-exp, merge-assign-and-aug-assign
     """Returns sequence string after its location start and end positinos are
     inputted"""
@@ -187,10 +193,12 @@ def getProtein(RNAseq, start, end) -> str:
         result += str(translate(RNAseq[start:end]))
     else:
         result += str(translate(RNAseq[end:start][::-1]))
+    return result
 
 
-def master(testSeq) -> str:
-    """Master function, input a sequnce and get a list of ORfs in return"""
+def getAllOrfs(testSeq) -> list:
+    """Returns list of all non-redundant ORFs of a DNA string. List is made up
+    of orfNode class objects"""
 
     forRNA = transcribe(testSeq)
 
@@ -207,18 +215,26 @@ def master(testSeq) -> str:
     allORFs = forORFs + revORFs
     allORFs = sortORFs(allORFs, len(allORFs))
 
-    result = ""
+    return allORFs
 
+
+def master(testSeq) -> str:
+    """Master function, input a sequnce and get a list of ORfs in return"""
+
+    allORFs = getAllOrfs(testSeq)
+
+    forRNA = transcribe(testSeq)
+    compTestSeq = getComplement(testSeq[::-1])
+    revRNA = transcribe(compTestSeq)
     revRNA = revRNA[::-1]
 
+    result = ""
     for i in allORFs:
         if i.endPos > i.startPos:
-            result += f"Start: {i.startPos+1}\nEnd: {i.endPos}\n\
-                    Length: {i.endPos-i.startPos}\n+\n"
+            result += f"Start: {i.startPos+1}\nEnd: {i.endPos}\nLength: {i.endPos-i.startPos}\n+\n"
             result += f"{translate(forRNA[i.startPos:i.endPos])}\n\n"
         else:
-            result += f"Start: {i.startPos+1}\nEnd: {i.endPos}\n\
-                    Length: {i.startPos-i.endPos}\n-\n"
+            result += f"Start: {i.startPos+1}\nEnd: {i.endPos}\nLength: {i.startPos-i.endPos}\n-\n"
             result += f"{translate(revRNA[i.endPos:i.startPos][::-1])}\n\n"
 
     return result
@@ -356,18 +372,23 @@ AGCCAGCTTCCGGCCAGCGCCAGCCCGCCCATGGTAACCACCGGCAGAGCGGTCGAC"
     forRNA = transcribe(testSeq)
     revRNA = transcribe(compTestSeq)
 
+    # print(f"Forward RNA:\n{forRNA}")
+    # print(f"Reverse RNA:\n{revRNA}")
+
     # forRNA = testSeq
     # revRNA = transcribe(compTestSeq)
 
-    forORFs = getORF(forRNA)
-    revORFs = getORF(revRNA)
+    # forORFs = getORF(forRNA)
+    # revORFs = getORF(revRNA)
 
-    for i in revORFs:
-        i.startPos, i.endPos = len(compTestSeq) - \
-            i.startPos, len(compTestSeq)-i.endPos
+    # print(longestORF(forORFs))
 
-    allORFs = forORFs + revORFs
-    allORFs = sortORFs(allORFs, len(allORFs))
+    # for i in revORFs:
+    #     i.startPos, i.endPos = len(compTestSeq) - \
+    #         i.startPos, len(compTestSeq)-i.endPos
+
+    # allORFs = forORFs + revORFs
+    # allORFs = sortORFs(allORFs, len(allORFs))
 
     # for i in allORFs:
     #     if i.endPos > i.startPos:
@@ -378,3 +399,5 @@ AGCCAGCTTCCGGCCAGCGCCAGCCCGCCCATGGTAACCACCGGCAGAGCGGTCGAC"
     #         print(translate(revRNA[i.endPos:i.startPos]))
 
     print(master(testSeq))
+
+    print(longestORF(testSeq))

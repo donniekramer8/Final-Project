@@ -31,7 +31,6 @@ def takeInput():
     if isDNA(INPUT):
         output.delete("1.0", "end")
         output.insert(tk.END, master(getRaw(INPUT)))
-        inputText.delete("1.0", "end")
     else:
         output.delete("1.0", "end")
         inputText.delete("1.0", "end")
@@ -43,11 +42,15 @@ def takeInput2():
     if isDNA(INPUT):
         output.delete("1.0", "end")
         output.insert(tk.END, longestORF((getRaw(INPUT))))
-        inputText.delete("1.0", "end")
     else:
         output.delete("1.0", "end")
         inputText.delete("1.0", "end")
         output.insert(tk.END, "Unsupported format")
+
+
+def clear():
+    inputText.delete("1.0", "end")
+    output.delete("1.0", "end-1c")
 
 
 l = tk.Label(text="Enter Sequence in Raw Format:")
@@ -70,13 +73,19 @@ Display1 = tk.Button(root, height=2,
 
 Display2 = tk.Button(root, height=2,
                      width=20,
-                     text="Get Longest Open Reading Frames",
+                     text="Get Longest ORF",
                      command=lambda: takeInput2())
+
+Display3 = tk.Button(root, height=2,
+                     width=20,
+                     text="Clear",
+                     command=lambda: clear())
 
 l.pack()
 inputText.pack()
 Display1.pack()
 Display2.pack()
+Display3.pack()
 output.pack()
 
 root.mainloop()
