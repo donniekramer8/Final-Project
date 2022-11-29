@@ -30,7 +30,7 @@ def takeInput():
     INPUT = inputText.get("1.0", "end-1c")
     if isDNA(INPUT):
         output.delete("1.0", "end")
-        output.insert(tk.END, master(getRaw(INPUT)))
+        output.insert(tk.END, main(getRaw(INPUT)))
     else:
         output.delete("1.0", "end")
         inputText.delete("1.0", "end")
