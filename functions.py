@@ -8,9 +8,16 @@
 * IDE: PyCharm 2021.3.1
 * Copyright : This is my own original work
 * based on specifications issued by our instructor
-* Description : The purpose of this program is to ***
-*            Input: ***
-*            Ouput: ***
+* Description : This main function in this file finds open reading frames within
+a DNA strand. An open reading frame is a string of DNA letters between a start
+and a stop codon. A start codon is always AUG, but a stop codon can be one of 3
+different 3-letter strings. The reason why you might want to find an open
+reading frame (ORF for short) is that long ORFs are typically genes. A gene will
+be transcribed into RNA, and that will then get translated into a protein.
+*            Input: A DNA sequence
+*            Ouput: A list of Open Reading Frames, sorted in decreasing
+order of length. Start and End positions on input DNA strand are given, as well
+as if its on the forward or reverse strand, and also the protein sequence.
 * Academic Honesty: I attest that this is my original work.
 * I have not used unauthorized source code, either modified or
 * unmodified. I have not given other fellow student(s) access
@@ -91,12 +98,6 @@ class orfNode:
     def __init__(self) -> None:
         self.startPos = 0
         self.endPos = 0
-
-    # def __init__(self, startPos=None, endPos=None) -> None:
-    #     if startPos is None:
-    #         self.startPos = 0
-    #     if endPos is None:
-    #         self.endPos = 0
 
 
 def _getORFs(RNA) -> list:
