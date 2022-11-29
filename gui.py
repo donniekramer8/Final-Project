@@ -18,10 +18,10 @@
 """
 
 
-from tkinter import *
 from functions import *
+import tkinter as tk
 
-root = Tk()
+root = tk.Tk()
 root.geometry("1000x750")
 root.title("Longest ORF Finder for Bacterial DNA")
 
@@ -30,35 +30,62 @@ def takeInput():
     INPUT = inputText.get("1.0", "end-1c")
     if isDNA(INPUT):
         output.delete("1.0", "end")
-        output.insert(END, master(getRaw(INPUT)))
-        inputText.delete("1.0", "end")
+        output.insert(tk.END, main(getRaw(INPUT)))
     else:
         output.delete("1.0", "end")
         inputText.delete("1.0", "end")
-        output.insert(END, "Unsupported format")
+        output.insert(tk.END, "Unsupported format")
 
 
-l = Label(text="Enter Sequence in Raw Format:")
-inputText = Text(root, height=20,
+def takeInput2():
+    INPUT = inputText.get("1.0", "end-1c")
+    if isDNA(INPUT):
+        output.delete("1.0", "end")
+        output.insert(tk.END, longestORF((getRaw(INPUT))))
+    else:
+        output.delete("1.0", "end")
+        inputText.delete("1.0", "end")
+        output.insert(tk.END, "Unsupported format")
+
+
+def clear():
+    inputText.delete("1.0", "end")
+    output.delete("1.0", "end-1c")
+
+
+l = tk.Label(text="Enter Sequence in Raw Format:")
+inputText = tk.Text(root, height=20,
+                    width=100,
+                    cursor="trek",
+                    insertbackground="black",
+                    fg="black",
+                    bg="white")
+
+output = tk.Text(root, height=30,
                  width=100,
-                 cursor="trek",
-                 insertbackground="black",
                  fg="black",
                  bg="white")
 
-output = Text(root, height=30,
-              width=100,
-              fg="black",
-              bg="white")
+Display1 = tk.Button(root, height=2,
+                     width=20,
+                     text="Get List of Open Reading Frames",
+                     command=lambda: takeInput())
 
-Display = Button(root, height=2,
-                 width=20,
-                 text="Get Open Reading Frames",
-                 command=lambda: takeInput())
+Display2 = tk.Button(root, height=2,
+                     width=20,
+                     text="Get Longest ORF",
+                     command=lambda: takeInput2())
+
+Display3 = tk.Button(root, height=2,
+                     width=20,
+                     text="Clear",
+                     command=lambda: clear())
 
 l.pack()
 inputText.pack()
-Display.pack()
+Display1.pack()
+Display2.pack()
+Display3.pack()
 output.pack()
 
-mainloop()
+root.mainloop()
