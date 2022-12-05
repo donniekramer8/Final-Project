@@ -8,14 +8,15 @@
 * IDE: PyCharm 2021.3.1
 * Copyright : This is my own original work
 * based on specifications issued by our instructor
-* Description : This main function in this file finds open reading frames within
-a DNA strand. An open reading frame is a string of DNA letters between a start
-and a stop codon. A start codon is always AUG, but a stop codon can be one of 3
-different 3-letter strings. The reason why you might want to find an open
-reading frame (ORF for short) is that long ORFs are typically genes. A gene will
-be transcribed into RNA, and that will then get translated into a protein.
+* Description : This main function in this file finds open reading frames
+within a DNA strand. An open reading frame is a string of DNA letters between a
+start and a stop codon. A start codon is always AUG, but a stop codon can be
+one of 3 different 3-letter strings. The reason why you might want to find an
+open reading frame (ORF for short) is that long ORFs are typically genes. A
+gene will be transcribed into RNA, and that will then get translated into a
+protein.
 *            Input: A DNA sequence
-*            Ouput: A list of Open Reading Frames, sorted in decreasing
+*            Output: A list of Open Reading Frames, sorted in decreasing
 order of length. Start and End positions on input DNA strand are given, as well
 as if its on the forward or reverse strand, and also the protein sequence.
 * Academic Honesty: I attest that this is my original work.
@@ -132,7 +133,7 @@ def _getORFs(RNA) -> list:
     if gene and (RNA[-1], RNA[-2], RNA[-3]) not in stopCodons:
         orfs[-1].endPos = len(RNA)  # ORF ends at the end of the sequence
 
-    # remove redudant ORFs (one open reading frame within another)
+    # remove redundant ORFs (one open reading frame within another)
     endPositions = []
     newORFs = []
     for x in orfs:
@@ -164,7 +165,7 @@ def _sortORFs(arr, size) -> list:
     return arr
 
 
-def longestORF(DNA) -> tuple:
+def longestORF(DNA) -> str:
     """Returns protein sequence string of longest ORF in of the inputted DNA
     strand"""
 
@@ -202,7 +203,7 @@ def _getProtein(RNAseq, start, end) -> str:
 
 def _getAllOrfs(DNA) -> list:
     """Returns list of all non-redundant ORFs of a DNA string and it's
-    complementary seqeunce. List is made up of orfNode class objects"""
+    complementary sequence. List is made up of orfNode class objects"""
 
     forRNA = transcribe(DNA)
     revRNA = reverseRNA(DNA)
@@ -221,7 +222,7 @@ def _getAllOrfs(DNA) -> list:
 
 
 def main(DNA) -> str:
-    """Input a sequnce and get a list of ORfs in return"""
+    """Input a sequence and get a list of ORfs in return"""
 
     forRNA = transcribe(DNA)
     revRNA = reverseRNA(DNA)[::-1]
@@ -236,7 +237,7 @@ def main(DNA) -> str:
         else:
             result += f"Start: {i.startPos+1}\nEnd: {i.endPos}\nLength: {i.startPos-i.endPos}\n-\n"
             result += f"{translate(revRNA[i.endPos:i.startPos][::-1])}\n\n"
-            # I know I have reverse the revRNA list like 3 times now, but it
+            # I know I have reversed the revRNA list like 3 times now, but it
             # hurts my brain when I think about it and this works
 
     return result
