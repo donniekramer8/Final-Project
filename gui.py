@@ -13,7 +13,7 @@ not be the prettiest in the world, it does everything I want it to do. The top
 box is where you input your data. The bottom box is the output. Between, there
 are 3 buttons that perform different actions on the input data.
 *            Input: DNA sequence
-*            Ouput: List of open reading frames or the longest open reading
+*            Output: List of open reading frames or the longest open reading
 frame's protein
 * Academic Honesty: I attest that this is my original work.
 * I have not used unauthorized source code, either modified or
