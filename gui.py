@@ -43,7 +43,7 @@ def takeInput():
 
 def takeInput2():
     INPUT = inputText.get("1.0", "end-1c")
-    if isDNA(INPUT):
+    if isDNA(INPUT):  # ensures correct input validation
         output.delete("1.0", "end")
         output.insert(tk.END, longestORF((getRaw(INPUT))))
     else:

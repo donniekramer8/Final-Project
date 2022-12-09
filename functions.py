@@ -43,11 +43,15 @@ def getRaw(seq) -> str:  # GOOD
     return "".join(i for i in seq if i in nucleotides)
 
 
-def getRandomNucs(seqSize) -> str:  # GOOD
-    """Returns a string of random DNA nucleotides of size seqSize"""
+# the function below is not used here, but I like it for my own playing around
+# so I will not delete it, but for the purposes of this assignment, do not worry
+# about it
 
-    nucleotides = ['A', 'T', 'C', 'G']
-    return "".join(nucleotides[random.randint(0, 3)] for _ in range(seqSize))
+# def getRandomNucs(seqSize) -> str:  # GOOD
+#     """Returns a string of random DNA nucleotides of size seqSize"""
+
+#     nucleotides = ['A', 'T', 'C', 'G']
+#     return "".join(nucleotides[random.randint(0, 3)] for _ in range(seqSize))
 
 
 def getComplement(DNA) -> str:  # GOOD
@@ -93,15 +97,22 @@ def translate(RNA) -> str:  # GOOD
     return protein
 
 
-class orfNode:
-    """Node class for ORFs. Stores start and end position of the orf"""
+class orf:
+    """Class for ORFs. Stores start and end position of the orf"""
+    # this class initially made more sense because I had other attributes such
+    # as the protein sequence, length, etc. I ended up removing those and only
+    # including the start and end positions. I did this because I felt like it
+    # was a waste of time to calculate those things for each orf. The purpose of
+    # this program after all is to find the longest orf, and that is all. So, I
+    # ended up just calling functions to find the protein sequence and etc.
+    # later on only in the longest orf.
 
     def __init__(self) -> None:
         self.startPos = 0
         self.endPos = 0
 
 
-def _getORFs(RNA) -> list:
+def getORFs(RNA) -> list:
     """returns a list of open reading frames from the inputted sequence.
     ORF is defined by start and end positions only."""
 
@@ -118,7 +129,7 @@ def _getORFs(RNA) -> list:
         if not gene and (RNA[i], RNA[i+1], RNA[i+2]) == startCodon:
             gene = True
             current = i
-            orfs.append(orfNode())
+            orfs.append(orf())
             currentORF += 1
             orfs[currentORF].startPos = i
         elif gene and (RNA[i], RNA[i+1], RNA[i+2]) in stopCodons:
@@ -146,7 +157,7 @@ def _getORFs(RNA) -> list:
     return newORFs
 
 
-def _sortORFs(arr, size) -> list:
+def sortORFs(orfArr, size) -> list:
     """sorts a list of orfs from largest to smallest"""
 
     # selection sort
@@ -156,20 +167,20 @@ def _sortORFs(arr, size) -> list:
 
         for j in range(ind + 1, size):
             # select the minimum element in every iteration
-            if abs(arr[j].endPos - arr[j].startPos) > \
-                    abs(arr[maxIndex].endPos - arr[maxIndex].startPos):
+            if abs(orfArr[j].endPos - orfArr[j].startPos) > \
+                    abs(orfArr[maxIndex].endPos - orfArr[maxIndex].startPos):
                 maxIndex = j
         # swapping the elements to sort the array
-        (arr[ind], arr[maxIndex]) = (arr[maxIndex], arr[ind])
+        (orfArr[ind], orfArr[maxIndex]) = (orfArr[maxIndex], orfArr[ind])
 
-    return arr
+    return orfArr
 
 
 def longestORF(DNA) -> str:
     """Returns protein sequence string of longest ORF in of the inputted DNA
     strand"""
 
-    orfs = _getAllOrfs(DNA)
+    orfs = getAllOrfs(DNA)
 
     if orfs == []:
         # raise error
@@ -179,21 +190,24 @@ def longestORF(DNA) -> str:
         if orfs[i+1].endPos - orfs[i+1].startPos > x.endPos - x.startPos:
             x = orfs[i+1]
 
-    RNA = transcribe(DNA) if x.endPos > x.startPos else reverseRNA(DNA)
+    RNA = transcribe(DNA) if x.endPos > x.startPos else compRNA(DNA)
 
-    return _getProtein(RNA, x.startPos, x.endPos)
+    return getProtein(RNA, x.startPos, x.endPos)
 
 
-def reverseRNA(DNA) -> str:
+def compRNA(DNA) -> str:
     """Return a string of the RNA strand complementary to the inputted DNA
     sequence in the 5' -> 3' direction"""
 
     return transcribe(getComplement(DNA[::-1]))
 
 
-def _getProtein(RNAseq, start, end) -> str:
+def getProtein(RNAseq, start, end) -> str:
     """Returns sequence string after its location start and end positinos are
     inputted"""
+
+    # An example of one of the functions I made instead of doing more with the
+    # orf class
 
     if end > start:
         return str(translate(RNAseq[start:end]))
@@ -201,22 +215,24 @@ def _getProtein(RNAseq, start, end) -> str:
         return str(translate(RNAseq[end:start][::-1]))
 
 
-def _getAllOrfs(DNA) -> list:
+def getAllOrfs(DNA) -> list:
     """Returns list of all non-redundant ORFs of a DNA string and it's
-    complementary sequence. List is made up of orfNode class objects"""
+    complementary sequence. List is made up of orfNode class objects. This is
+    different from getORFs because it gets orfs for both the forward and
+    reverse strands."""
 
     forRNA = transcribe(DNA)
-    revRNA = reverseRNA(DNA)
+    revRNA = compRNA(DNA)
 
-    forORFs = _getORFs(forRNA)
-    revORFs = _getORFs(revRNA)
+    forORFs = getORFs(forRNA)
+    revORFs = getORFs(revRNA)
 
     for i in revORFs:  # switch start/end positions to reflect direction of RNA
         i.startPos, i.endPos = len(revRNA) - \
             i.startPos, len(revRNA)-i.endPos
 
     allORFs = forORFs + revORFs
-    allORFs = _sortORFs(allORFs, len(allORFs))
+    allORFs = sortORFs(allORFs, len(allORFs))
 
     return allORFs
 
@@ -224,10 +240,11 @@ def _getAllOrfs(DNA) -> list:
 def main(DNA) -> str:
     """Input a sequence and get a list of ORfs in return"""
 
+    # defining these here to print below
     forRNA = transcribe(DNA)
-    revRNA = reverseRNA(DNA)[::-1]
+    revRNA = compRNA(DNA)[::-1]
 
-    allORFs = _getAllOrfs(DNA)
+    allORFs = getAllOrfs(DNA)
 
     result = ""
     for i in allORFs:
