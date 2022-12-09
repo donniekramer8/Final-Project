@@ -166,11 +166,11 @@ def sortORFs(orfArr, size) -> list:
         maxIndex = ind
 
         for j in range(ind + 1, size):
-            # select the minimum element in every iteration
+            # select the maximum length orf in every iteration
             if abs(orfArr[j].endPos - orfArr[j].startPos) > \
                     abs(orfArr[maxIndex].endPos - orfArr[maxIndex].startPos):
                 maxIndex = j
-        # swapping the elements to sort the array
+        # swap the orfs
         (orfArr[ind], orfArr[maxIndex]) = (orfArr[maxIndex], orfArr[ind])
 
     return orfArr
@@ -183,8 +183,7 @@ def longestORF(DNA) -> str:
     orfs = getAllOrfs(DNA)
 
     if orfs == []:
-        # raise error
-        return
+        return ''
     x = orfs[0]
     for i in range(len(orfs)-1):
         if orfs[i+1].endPos - orfs[i+1].startPos > x.endPos - x.startPos:

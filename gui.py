@@ -30,9 +30,10 @@ root.geometry("1000x750")
 root.title("Longest ORF Finder for Bacterial DNA")
 
 
+# get List of Open Reading Frames
 def takeInput():
     INPUT = inputText.get("1.0", "end-1c")
-    if isDNA(INPUT):
+    if isDNA(INPUT):  # input validation
         output.delete("1.0", "end")
         output.insert(tk.END, main(getRaw(INPUT)))
     else:
@@ -41,11 +42,12 @@ def takeInput():
         output.insert(tk.END, "Unsupported format")
 
 
+# get Longest ORF
 def takeInput2():
     INPUT = inputText.get("1.0", "end-1c")
-    if isDNA(INPUT):  # ensures correct input validation
+    if isDNA(INPUT):  # input validation
         output.delete("1.0", "end")
-        output.insert(tk.END, longestORF((getRaw(INPUT))))
+        output.insert(tk.END, longestORF(getRaw(INPUT)))
     else:
         output.delete("1.0", "end")
         inputText.delete("1.0", "end")
@@ -57,10 +59,9 @@ def clear():
     output.delete("1.0", "end-1c")
 
 
-l = tk.Label(text="Enter Sequence in Raw Format:")
+l = tk.Label(text="Enter DNA Sequence:")
 inputText = tk.Text(root, height=20,
                     width=100,
-                    cursor="trek",
                     insertbackground="black",
                     fg="black",
                     bg="white")
