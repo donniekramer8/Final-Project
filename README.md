@@ -22,4 +22,4 @@ Then, you could try searching the longest open reading frame's protein sequence 
 To do that, copy the protein sequence "without the '-' at the end" and paste it into the box at this page:
 https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastp&PAGE_TYPE=BlastSearch&LINK_LOC=blasthome
 
-It might take a minute, but it will show you if your ORF is indeed a protein-coding gene!
+Finally, hit the blue BLAST button at the bottom. It might take a minute, but it will show you if your ORF is indeed a protein-coding gene!
